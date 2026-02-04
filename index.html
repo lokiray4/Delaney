@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thomas Delaney 球员记录</title>
+    <style>
+        /* 全局设置 */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background-color: #003DA5;
+            /* 哥本哈根蓝 */
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        nav a {
+            margin-left: 24px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+
+        /* 内容区示例 */
+        .content {
+            background-color: #F5F7FA;
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
+            font-weight: 9000;
+            font-size: 50rem;
+            text-transform: uppercase;
+            color: #003DA5;
+            position: relative;
+            max-width: 300%;
+            text-align: center;
+            /* 居中 */
+            margin-left: auto;
+            /* 块居中 */
+            margin-right: auto;
+        }
+
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-card {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #003DA5;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+
+        .main {
+            position: relative;
+            height: 75vh;
+            overflow: hidden;
+            transform: scale(1);
+            opacity: 0;
+            /* 初始透明 */
+            transition: opacity 0.8s ease;
+            /* 图片渐入时间较短 */
+        }
+
+        .main.loaded {
+            opacity: 1;
+            /* 图片渐入 */
+        }
+
+        .main.shrink {
+            transform: scale(0.95);
+            opacity: 0.7;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* 文字初始状态 */
+        .main-overlay {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -90%);
+            text-align: center;
+            color: white;
+            text-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
+            z-index: 2;
+            opacity: 0;
+            /* 初始透明 */
+            transition: transform 2s ease, opacity 2s ease;
+            /* 渐入时间更长 */
+            transition-delay: 0.5s;
+            /* 比图片晚0.4秒开始 */
+        }
+
+        /* 文字加载后状态 */
+        .main.loaded .main-overlay {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+
+        .main-overlay h1 {
+            font-size: 8rem;
+            max-width: 6000px;
+            margin-bottom: 1px;
+
+            white-space: nowrap;
+            /* 禁止换行 */
+            overflow: visible;
+            /* 不隐藏溢出内容 */
+            text-overflow: clip;
+            /* 超出文本直接裁剪（无省略号） */
+        }
+
+
+        .main-overlay p {
+            font-size: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main.shrink .main-overlay h1,
+        .main.shrink .main-overlay p {
+            transform: translateY(-20px);
+            opacity: 0.8;
+        }
+
+        .timeline {
+            max-width: 900px;
+            margin: 60px auto 80px;
+            position: relative;
+            padding: 0 20px;
+        }
+
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+            /* 时间轴主线 */
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 100%;
+            background-color: #003DA5;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            z-index: 1;
+        }
+
+        .timeline-item {
+            padding: 20px 30px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item.left {
+            left: 0;
+            text-align: right;
+        }
+
+        .timeline-item.right {
+            left: 50%;
+            text-align: left;
+        }
+
+        .timeline-item .content {
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            max-width: 380px;
+        }
+
+        .timeline-item.left .content::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: -15px;
+            border-width: 10px 0 10px 15px;
+            border-style: solid;
+            border-color: transparent transparent transparent white;
+        }
+
+        .timeline-item.right .content::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -15px;
+            border-width: 10px 15px 10px 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+        }
+
+        .timeline-item h3 {
+            margin-top: 0;
+            color: #003DA5;
+        }
+
+        .timeline-item img {
+            width: 100%;
+            border-radius: 8px;
+            margin: 12px 0;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-item p {
+            font-size: 0.95rem;
+            color: #444;
+            line-height: 1.5;
+        }
+
+        /* 响应式，窄屏幕时改为单列 */
+        @media screen and (max-width: 720px) {
+
+            .timeline-item,
+            .timeline-item.left,
+            .timeline-item.right {
+                width: 100%;
+                text-align: left !important;
+                left: 0 !important;
+                margin-bottom: 30px;
+            }
+
+            .timeline-container::before {
+                left: 20px;
+            }
+
+            .timeline-item .content::after {
+                display: none;
+            }
+        }
+
+        @keyframes floatUpFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .timeline-item .content {
+            background-color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow:
+                0 20px 40px rgba(0, 61, 165, 0.15),
+                0 6px 18px rgba(0, 61, 165, 0.12);
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            max-width: 380px;
+
+            /* 初始状态 */
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        /* 滚动触发显示动画 */
+        .timeline-item.visible .content {
+            animation: floatUpFadeIn 0.7s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 鼠标悬浮放大 + 浮动阴影 */
+        .timeline-item .content:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow:
+                0 40px 80px rgba(0, 61, 165, 0.2),
+                0 12px 36px rgba(0, 61, 165, 0.16);
+            cursor: default;
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
+        }
+
+        .section-title {
+            font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
+            /* 选个粗且有设计感的字体 */
+            font-weight: 900;
+            font-size: 3.8rem;
+            /* 字体更大 */
+            letter-spacing: 0.25em;
+            /* 拉宽字间 */
+            text-transform: uppercase;
+            color: #003DA5;
+            position: relative;
+            max-width: 100%;
+            margin-bottom: 50px;
+        }
+
+        /* 文字底部加长装饰线 */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: 120%;
+            max-width: 600px;
+            height: 3px;
+            background: linear-gradient(90deg, #003DA5 0%, #0057D9 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        p {
+            text-align: justify;
+            /* 两端对齐 */
+            text-indent: 2em;
+            /* 首行缩进两个字符宽度 */
+            line-height: 1.6;
+            /* 适当行高，增加可读性 */
+            margin: 0 0 1em 0;
+            /* 下边距 */
+            max-width: 800px;
+            /* 控制宽度，避免太宽阅读困难，可根据需要调整 */
+        }
+
+        /* 基础上下间距，默认 48px，可被每项的 --mt 覆盖 */
+        .timeline-item {
+            margin: 48px 0;
+        }
+
+        /* 允许通过每项内联变量自定义“上外边距”，支持负值实现重叠 */
+        .timeline-item {
+            margin-top: var(--mt, 48px);
+        }
+
+        /* 为了更自然的层级关系，靠右的一侧略提高层级，避免重叠时被遮 */
+        .timeline-item.right .content {
+            z-index: 3;
+        }
+
+        .timeline-item.left .content {
+            z-index: 2;
+        }
+
+        /* 移动端：统一恢复正常间距，避免小屏重叠导致阅读困难 */
+        @media screen and (max-width: 720px) {
+            .timeline-item {
+                margin: 24px 0 !important;
+                --mt: 24px;
+                /* 即使写了负值，这里也会被覆盖为安全值 */
+            }
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainSection = document.querySelector('.main');
+
+            // 页面加载后渐入
+            setTimeout(() => {
+                mainSection.classList.add('loaded');
+            }, 300); // 延迟100ms，避免闪烁
+
+            // 滚动时缩放/淡出
+            document.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    mainSection.classList.add('shrink');
+                } else {
+                    mainSection.classList.remove('shrink');
+                }
+            });
+        });
+
+        function onScrollAnimateTimeline() {
+            const items = document.querySelectorAll('.timeline-item');
+            const triggerBottom = window.innerHeight * 0.85;
+
+            items.forEach(item => {
+                const top = item.getBoundingClientRect().top;
+                if (top < triggerBottom) {
+                    item.classList.add('visible');
+                } else {
+                    item.classList.remove('visible');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 之前已有代码...
+
+            // 视口滚动监听激活动画
+            onScrollAnimateTimeline();
+            window.addEventListener('scroll', onScrollAnimateTimeline);
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <script src="config.js"></script>
+
+    <header>
+        <div class="logo">🇩🇰 Thomas Delaney</div>
+        <nav>
+            <a href="#">首页</a>
+            <a href="kit.html">赛季回顾</a>
+            <a href="stat.html">统计数据</a>
+            <a href="goal.html">进球纪录</a>
+        </nav>
+
+    </header>
+
+    <section class="main">
+        <img src="index_img/main.JPG" alt="Thomas Delaney" class="main-image">
+        <div class="main-overlay">
+            <h1>Thomas Delaney</h1>
+        </div>
+    </section>
+
+    <section class="timeline">
+        <h2 class="section-title">TIMELINE</h2>
+        <div class="timeline-container">
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>1991年9月3日</h3>
+                    <img src="index_img/1991.jpg" alt="Thomas Delaney" class="main-image">
+                    <p>
+                        这一年，德莱尼出生于丹麦，成长于丹麦腓特烈斯堡的Sløjfen区。<br>
+                    </p>
+                    <p>
+                        他的父亲一方家族源自爱尔兰，曾在19世纪大饥荒期间辗转迁徙至纽约。
+                        德莱尼的祖父在丹麦度假时遇见了祖母，开启了跨国家族故事。
+                        祖父现居丹麦蒂斯维尔德，虽然生活多年，讲话仍带有浓厚的美式口音，
+                        并时常用英语讲述纽约成长的经历。腓特烈斯堡的生活轨迹贯穿他的童年，<br>
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>1992年</h3>
+                    <img src="index_img/1992.jpg" alt="1992年故事" />
+                    <p>
+                        成为哥本哈根其中一员。
+                    </p>
+                    <p>
+                        德莱尼的叔叔就带着他加入了哥本哈根的球迷会。
+                        他是球迷会首批100名会员之一，甚至一度是球迷会中最年轻的会员。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>1994年</h3>
+                    <img src="index_img/1994.jpg" alt="1994年故事" />
+                    <img src="index_img/1994-1.jpg" alt="1994年故事" />
+                    <p>
+                        加入KB（即哥本哈根青训Kjobenhavns Boldklub）。<br>
+                    </p>
+                    <p>
+                        当时，老德莱尼（Michael）曾试图让托马斯加入腓特烈堡的当地俱乐部（Frederiksberg Boldklub），
+                        但是俱乐部的入队要求是必须年满四岁。当时哥本哈根也有同样的年龄限制，
+                        但他们却破格让三岁的德莱尼加入了球队的青训营。
+                    </p>
+                </div>
+            </div>
+
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2008年</h3>
+                    <img src="index_img/2008.jpg" alt="2008年 签下首份职业合同">
+                    <img src="index_img/2008-1.jpg" alt="2008年 签下首份职业合同">
+                    <p>
+                        德莱尼与哥本哈根签下了第一份职业合同，正式踏入职业足球的大门。
+                    </p>
+                    <p>
+                        在2008年8月的一场非官方友谊赛中，德莱尼首次代表哥本哈根出场，并在比赛当中打入两球。当时他身穿着球队的6号球衣。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2009年4月16日</h3>
+                    <img src="index_img/20090416.jpg" alt="2009年4月16日 职业生涯首秀">
+                    <p>
+                        职业生涯首秀。
+                    </p>
+                    <p>
+                        17岁零255天，德莱尼完成了代表哥本哈根一线队的首次出场。
+                        2009年4月16日丹麦杯半决赛第一回合，德莱尼在第64分钟替补诺莱加德出场，对手是诺维斯特FC。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2009年7月22日</h3>
+                    <img src="index_img/20090722.jpg" alt="2009年7月22日 职业生涯首球">
+                    <img src="index_img/20090722-1.jpg" alt="2009年7月22日 职业生涯首球">
+                    <p>
+                        职业生涯第一个进球。
+                    </p>
+                    <p>
+                        在2009–10赛季欧冠预选赛第二轮,哥本哈根客场对阵黑山球队FK Mogren的比赛中，比赛的第47分钟，德莱尼打入了职业生涯的首个进球。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2009年8月15日</h3>
+                    <img src="index_img/20090815.jpg" alt="2009年8月15日 职业生涯第一次首发">
+                    <p>
+                        职业生涯第一次首发。
+                    </p>
+                    <p>
+                        职业生涯的第一次首发出现在主场对阵AGF的比赛中，帕肯球场涌入了16,379名观众。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2010年5月5日</h3>
+                    <img src="index_img/20100505.jpg">
+                    <p>
+                        第一次成为丹麦超级联赛冠军。
+                    </p>
+                    <p>
+                        2010年5月5日，哥本哈根4:0击败HB Køge，德莱尼第一次随队获得了丹麦超级联赛冠军。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2010年9月29日</h3>
+                    <img src="index_img/20100929.jpg">
+                    <p>
+                        欧冠正赛首秀。
+                    </p>
+                    <p>
+                        10/11赛季欧冠小组赛第二轮客场对阵帕纳辛奈克斯，德莱尼替补出场11分钟，完成自己的欧冠正赛首秀。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2013年10月15日</h3>
+                    <img src="index_img/20131015.jpg" alt="2013年10月15日 国家队首秀">
+                    <p>
+                        国家队首秀。
+                    </p>
+                    <p>
+                        在对阵马耳他的2014年世界杯预选赛中，德莱尼首次代表丹麦国家队出场。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2013年12月1日</h3>
+                    <img src="index_img/20131201.jpg" alt="2013年12月1日 首次担任哥本哈根队长">
+                    <p>
+                        首次担任哥本哈根队长。
+                    </p>
+                    <p>
+                        在队长Lars Jacobsen受伤后，主帅索尔巴肯任命德莱尼为临时队长。
+                        他第一次将象征荣誉的队长袖标缠绕在左臂上，带领球队踏入布伦德比球场。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left" style="--mt:-56px;">
+                <div class="content">
+                    <h3>2016年5月29日</h3>
+                    <img src="index_img/20160505.jpg">
+                    <img src="index_img/20160529.jpg">
+                    <p>
+                        成为双冠王。
+                    </p>
+                    <p>
+                        2016年5月5日，哥本哈根获得了丹麦杯的冠军。在这个月的29号，球队又捧起了15/16赛季的丹超冠军奖杯，德莱尼第一次成为丹麦国内双冠王。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2016年9月27日</h3>
+                    <img src="index_img/20160927.jpg">
+                    <img src="index_img/20160927-1.jpg">
+                    <p>
+                        欧冠首球。
+                    </p>
+                    <p>
+                        对阵布鲁日的欧冠小组赛中，德莱尼在第64分钟打进一记技惊四座的远射。这是德莱尼的第一粒欧冠进球。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2017年1月</h3>
+                    <img src="index_img/201701.jpg">
+                    <p>
+                        加盟云达不莱梅。
+                    </p>
+                    <p>
+                        在2017年1月，德莱尼正式加盟德甲云达不莱梅，并在21日客场对阵多特蒙德的德甲联赛中，首次代表云达不来梅出战正式比赛。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2017年9月1日</h3>
+                    <img src="index_img/20170901.jpg">
+                    <p>
+                        第一个国家队进球。
+                    </p>
+                    <p>
+                        德莱尼打进了他的第一个国家队进球，帮助丹麦队在2018年FIFA世界杯预选赛中主场4:0战胜波兰。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2018年6月7日</h3>
+                    <img src="index_img/20180607.jpg">
+                    <p>
+                        加盟多特蒙德。
+                    </p>
+                    <p>
+                        2018年6月7日，多特蒙德官宣丹麦中场德莱尼加盟球队。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2021年5月13日</h3>
+                    <img src="index_img/20210513.jpg">
+                    <p>
+                        成为德国杯冠军。
+                    </p>
+                    <p>
+                        2020-21赛季德国杯决赛中，多特蒙德4:1击败莱比锡红牛，德莱尼随队成为2021年德国杯冠军。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2021年7月4日</h3>
+                    <img src="index_img/20210704.jpg">
+                    <p>
+                        在欧洲杯取得进球。
+                    </p>
+                    <p>
+                        在对阵捷克队的欧洲杯1/8决赛中，德莱尼在开场第四分钟的角球进攻中头球破门，帮助丹麦国家队进入欧洲杯半决赛并当选本场比赛的最佳球员。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2021年8月25日</h3>
+                    <img src="index_img/20210825.jpg">
+                    <p>
+                        加盟塞维利亚。
+                    </p>
+                    <p>
+                        德莱尼转会西班牙，加盟西甲球队塞维利亚。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2023年1月30日</h3>
+                    <img src="index_img/20230130.jpg">
+                    <p>
+                        租借加盟霍芬海姆。
+                    </p>
+                    <p>
+                        2023年1月30日，塞维利亚官宣德莱尼租借加盟TSG霍芬海姆，直至赛季结束。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2023年8月22日</h3>
+                    <img src="index_img/20230822.jpg">
+                    <p>
+                        租借加盟安德莱赫特。
+                    </p>
+                    <p>
+                        2023年8月22日，德莱尼租借加盟比利时职业联赛俱乐部安德莱赫特。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2024年7月20日</h3>
+                    <img src="index_img/20240720.jpg">
+                    <p>
+                        回归哥本哈根。
+                    </p>
+                    <p>
+                        2024年7月20日，时隔七年半，德莱尼重回哥本哈根。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2024年7月29日</h3>
+                    <img src="index_img/20240729.jpg">
+                    <p>
+                        回归首秀。
+                    </p>
+                    <p>
+                        2024年7月29日，德莱尼回归为哥本哈根出战的第一场比赛，德莱尼在比赛第61分钟替补出场，随后在第78分钟为球队打进超出比分的一球，帮助球队取得联赛主场的开门红。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item left">
+                <div class="content">
+                    <h3>2024年8月25日</h3>
+                    <img src="index_img/20240825.jpg">
+                    <p>
+                        从国家队退役。
+                    </p>
+                    <p>
+                        2024年8月25日，德莱尼宣布从丹麦国家队退役。在11年的国家队生涯中，德莱尼为丹麦国家队出场81次，共取得了8个进球。
+                    </p>
+                </div>
+            </div>
+
+            <div class="timeline-item right">
+                <div class="content">
+                    <h3>2025年5月</h3>
+                    <img src="index_img/202505-1.jpg">
+                    <p>
+                        再次成为双冠王。
+                    </p>
+                    <p>
+                        2025年5月26日，哥本哈根成为丹麦超级联赛冠军，四天后球队又加冕丹麦杯冠军。德莱尼再次成为丹麦双冠王。
+                    </p>
+                </div>
+            </div>
+            <!-- 更多年份，左右交替添加 -->
+
+        </div>
+    </section>
+
+
+    <footer>
+        © 2025 Thomas Delaney Stats. All rights reserved.
+    </footer>
+
+</body>
+
+</html>

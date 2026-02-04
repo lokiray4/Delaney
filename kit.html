@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thomas Delaney 生涯球衣</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background-color: #003DA5;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        nav a {
+            margin-left: 24px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        .section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .section-title {
+            text-align: center;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .club-title {
+            width: 97%;
+            background: linear-gradient(135deg, #003DA5, #0051D4);
+            margin: 0 auto 20px auto;
+        }
+
+        .national-title {
+            width: 97%;
+            background-color: #C8102E;
+            margin: 0 auto 20px auto;
+        }
+
+        .kits {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 12px;
+        }
+
+        .kit {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.5s forwards;
+            cursor: pointer;
+        }
+
+        .kit img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .kit p {
+            margin: 0;
+            padding: 8px;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* 球队主题色 */
+        .哥本哈根 {
+            background-color: #005AA7;
+        }
+
+        .不莱梅 {
+            background-color: #1A936F;
+        }
+
+        .多特蒙德 {
+            background-color: #FDE100;
+            color: black;
+        }
+
+        .塞维利亚 {
+            background-color: #D00000;
+        }
+
+        .霍芬海姆 {
+            background-color: #005BAC;
+        }
+
+        .安德莱赫特 {
+            background-color: #5E2D91;
+        }
+
+        /* 国家队颜色 */
+        .丹麦 {
+            background-color: #C8102E;
+        }
+
+        /* 淡入动画 */
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #kitModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #kitModalContent {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            /* 背景固定为4:3 */
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #kitModalBg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px);
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease;
+            z-index: 0;
+        }
+
+        #kitModalImg {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            z-index: 1;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease;
+        }
+
+
+
+
+        #kitModalClose {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+            padding: 4px 10px;
+            background-color: rgba(0, 61, 165, 0.9);
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        #kitModalClose:hover {
+            background-color: rgba(0, 30, 90, 0.9);
+        }
+    </style>
+</head>
+
+<body>
+    <script src="config.js"></script>
+
+    <header>
+        <div class="logo">🇩🇰 Thomas Delaney</div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="kit.html">赛季回顾</a>
+            <a href="stat.html">统计数据</a>
+            <a href="goal.html">进球纪录</a>
+        </nav>
+    </header>
+
+    <div class="section">
+        <div class="section-title club-title">俱乐部球衣</div>
+        <div class="kits" id="clubKits">
+            <!-- 俱乐部球衣卡片 -->
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title national-title">国家队球衣</div>
+        <div class="kits" id="nationalKits">
+            <!-- 国家队球衣卡片 -->
+        </div>
+    </div>
+
+    <div id="kitModal">
+        <span id="kitModalClose">&times;</span>
+        <div id="kitModalContent">
+            <div id="kitModalBg"></div>
+            <img id="kitModalImg" src="" alt="Kit">
+        </div>
+    </div>
+
+
+
+
+    <script>
+        // 数据对象：赛季 -> {出场次数, 上场分钟, 进球, 助攻}
+        const clubData = {
+            "2008:09哥本哈根首秀.png": { appear: 1, minutes: 45, goals: 0, assists: 0 },
+            "2009:10哥本哈根.png": { appear: 9, minutes: 119, goals: 0, assists: 0 },
+            "2010:11哥本哈根.png": { appear: 16, minutes: 390, goals: 1, assists: 0 },
+            "2011:12哥本哈根.png": { appear: 19, minutes: 1259, goals: 1, assists: 0 },
+            "2012:13哥本哈根.png": { appear: 21, minutes: 1367, goals: 1, assists: 3 },
+            "2013:14哥本哈根.png": { appear: 32, minutes: 2526, goals: 3, assists: 0 },
+            "2014:15哥本哈根.png": { appear: 27, minutes: 2175, goals: 2, assists: 1 },
+            "2015:16哥本哈根.png": { appear: 29, minutes: 2575, goals: 5, assists: 3 },
+            "2016:17哥本哈根.png": { appear: 19, minutes: 1553, goals: 6, assists: 1 },
+            "2016:17不莱梅.png": { appear: 13, minutes: 916, goals: 4, assists: 1 },
+            "2017:18不莱梅.png": { appear: 32, minutes: 2796, goals: 3, assists: 4 },
+            "2018:19多特蒙德.png": { appear: 30, minutes: 2283, goals: 3, assists: 5 },
+            "2019:20多特蒙德.png": { appear: 11, minutes: 830, goals: 0, assists: 0 },
+            "2020:21多特蒙德.png": { appear: 20, minutes: 1286, goals: 1, assists: 1 },
+            "2021:22塞维利亚.png": { appear: 26, minutes: 1549, goals: 2, assists: 1 },
+            "2022:23塞维利亚.png": { appear: 8, minutes: 309, goals: 0, assists: 0 },
+            "2022:23霍芬海姆.png": { appear: 6, minutes: 298, goals: 0, assists: 0 },
+            "2023:24安德莱赫特.png": { appear: 14, minutes: 912, goals: 1, assists: 0 },
+            "2024:25哥本哈根.png": { appear: 24, minutes: 1649, goals: 5, assists: 3 },
+        };
+
+        const clubKits = [
+            { name: "2008-09 哥本哈根", file: "2008:09哥本哈根首秀.png", class: "哥本哈根" },
+            { name: "2009-10 哥本哈根", file: "2009:10哥本哈根.png", class: "哥本哈根" },
+            { name: "2010-11 哥本哈根", file: "2010:11哥本哈根.png", class: "哥本哈根" },
+            { name: "2011-12 哥本哈根", file: "2011:12哥本哈根.png", class: "哥本哈根" },
+            { name: "2012-13 哥本哈根", file: "2012:13哥本哈根.png", class: "哥本哈根" },
+            { name: "2013-14 哥本哈根", file: "2013:14哥本哈根.png", class: "哥本哈根" },
+            { name: "2014-15 哥本哈根", file: "2014:15哥本哈根.png", class: "哥本哈根" },
+            { name: "2015-16 哥本哈根", file: "2015:16哥本哈根.png", class: "哥本哈根" },
+            { name: "2016-17 哥本哈根", file: "2016:17哥本哈根.png", class: "哥本哈根" },
+            { name: "2016-17 不莱梅", file: "2016:17不莱梅.png", class: "不莱梅" },
+            { name: "2017-18 不莱梅", file: "2017:18不莱梅.png", class: "不莱梅" },
+            { name: "2018-19 多特蒙德", file: "2018:19多特蒙德.png", class: "多特蒙德" },
+            { name: "2019-20 多特蒙德", file: "2019:20多特蒙德.png", class: "多特蒙德" },
+            { name: "2020-21 多特蒙德", file: "2020:21多特蒙德.png", class: "多特蒙德" },
+            { name: "2021-22 塞维利亚", file: "2021:22塞维利亚.png", class: "塞维利亚" },
+            { name: "2022-23 塞维利亚", file: "2022:23塞维利亚.png", class: "塞维利亚" },
+            { name: "2022-23 霍芬海姆", file: "2022:23霍芬海姆.png", class: "霍芬海姆" },
+            { name: "2023-24 安德莱赫特", file: "2023:24安德莱赫特.png", class: "安德莱赫特" },
+            { name: "2024-25 哥本哈根", file: "2024:25哥本哈根.png", class: "哥本哈根" },
+        ];
+
+        // 国家队球衣
+        const nationalKits = [
+            { name: "丹麦 2013", file: "丹麦2013.png", class: "丹麦" },
+            { name: "丹麦 2014", file: "丹麦2014.png", class: "丹麦" },
+            { name: "丹麦 2015", file: "丹麦2015.png", class: "丹麦" },
+            { name: "丹麦 2016（1）", file: "丹麦2016（1）.png", class: "丹麦" },
+            { name: "丹麦 2016-17", file: "丹麦2016:17.png", class: "丹麦" },
+            { name: "丹麦 2017", file: "丹麦2017.png", class: "丹麦" },
+            { name: "丹麦 2018", file: "丹麦2018.png", class: "丹麦" },
+            { name: "丹麦 2021", file: "丹麦2021.png", class: "丹麦" },
+            { name: "丹麦 2022", file: "丹麦2022.png", class: "丹麦" },
+            { name: "丹麦 2023", file: "丹麦2023.png", class: "丹麦" },
+            { name: "丹麦 2024", file: "丹麦2024.png", class: "丹麦" },
+        ];
+
+        // 渲染俱乐部球衣
+        const clubContainer = document.getElementById("clubKits");
+        clubKits.forEach((kit, index) => {
+            const div = document.createElement("div");
+            div.className = "kit " + kit.class;
+            div.innerHTML = `<img src="kit_img/${kit.file}"><p>${kit.name}</p>`;
+            div.style.animationDelay = `${index * 0.1}s`;
+            clubContainer.appendChild(div);
+        });
+
+        // 渲染国家队球衣
+        const nationalContainer = document.getElementById("nationalKits");
+        nationalKits.forEach((kit, index) => {
+            const div = document.createElement("div");
+            div.className = "kit " + kit.class;
+            div.innerHTML = `<img src="kit_img/${kit.file}"><p>${kit.name}</p>`;
+            div.style.animationDelay = `${index * 0.1}s`;
+            nationalContainer.appendChild(div);
+        });
+
+        // 弹窗逻辑，只显示居中大图和模糊背景
+        const modal = document.getElementById("kitModal");
+        const modalImg = document.getElementById("kitModalImg");
+        const modalContent = document.getElementById("kitModalContent");
+        const closeBtn = document.getElementById("kitModalClose");
+
+        document.querySelectorAll(".kit img").forEach(img => {
+            img.addEventListener("click", () => {
+                modal.style.display = "flex";
+
+                const filename = img.src.split("/").pop();
+
+                // 大图
+                modalImg.src = `kit_img/${filename}`;
+                modalImg.style.transform = "scale(0.8)";
+                modalImg.style.opacity = 0;
+
+                // 背景
+                const bg = document.getElementById("kitModalBg");
+                bg.style.backgroundImage = `url('kit_img/show_img/${filename}')`;
+                bg.style.transform = "scale(0.95)";
+                bg.style.opacity = 0;
+
+                // 强制浏览器刷新
+                modalImg.getBoundingClientRect();
+                bg.getBoundingClientRect();
+
+                setTimeout(() => {
+                    modalImg.style.transform = "scale(1)";
+                    modalImg.style.opacity = 1;
+
+                    bg.style.transform = "scale(1)";
+                    bg.style.opacity = 1;
+                }, 20);
+            });
+        });
+
+
+
+
+
+        closeBtn.addEventListener("click", () => { modal.style.display = 'none'; });
+        modal.addEventListener("click", e => { if (e.target === modal) modal.style.display = 'none'; });
+    </script>
+
+</body>
+
+</html>

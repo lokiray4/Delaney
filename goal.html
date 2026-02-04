@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thomas Delaney 进球纪录</title>
+    <style>
+        .goal-item video {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            background: #000;
+            cursor: pointer;
+            outline: none;
+            object-fit: cover;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+                sans-serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background-color: #003DA5;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        nav a {
+            margin-left: 24px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        .goal-videos {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .goal-videos .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #003DA5;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+
+        .goal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .goal-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: center;
+            user-select: none;
+        }
+
+        .goal-item video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #000;
+            cursor: pointer;
+            outline: none;
+            object-fit: cover;
+        }
+
+        .goal-time,
+        .goal-opponent {
+            margin-top: 10px;
+            font-size: 1rem;
+            color: #003DA5;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            text-decoration: underline;
+        }
+
+        .goal-time:hover,
+        .goal-opponent:hover {
+            opacity: 0.8;
+        }
+
+        /* 弹窗背景遮罩 */
+        #videoModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.75);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        /* 弹窗内容 */
+        #videoModalContent {
+            position: relative;
+            width: 80vw;
+            max-width: 900px;
+            background-color: #000;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 61, 165, 0.8);
+        }
+
+        #videoModalContent video {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+
+        /* 关闭按钮 */
+        #modalCloseBtn {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+            padding: 4px 10px;
+            background-color: rgba(0, 61, 165, 0.9);
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        #modalCloseBtn:hover {
+            background-color: rgba(0, 30, 90, 0.9);
+        }
+    </style>
+</head>
+
+<body>
+    <script src="config.js"></script>
+    <header>
+        <div class="logo">🇩🇰 Thomas Delaney</div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="kit.html">赛季回顾</a>
+            <a href="stat.html">统计数据</a>
+            <a href="goal.html">进球纪录</a>
+        </nav>
+    </header>
+
+    <section class="goal-videos">
+        <div class="section-title">进球纪录</div>
+        <div class="goal-grid" id="goalGrid">
+            <!-- JS 动态生成视频列表 -->
+        </div>
+    </section>
+
+    <!-- 视频预览弹窗 -->
+    <div id="videoModal">
+        <div id="videoModalContent">
+            <span id="modalCloseBtn">&times;</span>
+            <video id="modalVideo" controls autoplay></video>
+        </div>
+    </div>
+
+    <script>
+        // 可配置的视频基路径，部署到云存储后将其改为公网URL，例如：
+        // const VIDEO_BASE = 'https://pub-xxxxxxxxxxxxxxxxxxxx.r2.dev/';
+        const VIDEO_BASE = window.VIDEO_BASE || 'goal_video/';
+
+        const videoFiles = [
+            "2019.5.11-F. Düsseldorf-杜塞尔多夫.MOV",
+            "2021.9.7-Israel-以色列.mov",
+            "2017.9.4-Armenia-亚美尼亚3球.mp4",
+            "2019.9.5-Gibraltar-直布罗陀.mov",
+            "2019.3.16-Hertha BSC-柏林赫塔.mp4",
+            "2017.9.10-Hertha BSC-柏林赫塔.mov",
+            "2016.10.23-Odense BK-欧本.MOV",
+            "2011.5.16-AC Horsens-霍森斯.mp4",
+            "2013.8.4-Randers FC-兰达斯.mp4",
+            "2018.12.8-FC Schalke 04-沙尔克.MOV",
+            "2016.9.27-Club Brugge-布鲁日.mov",
+            "2022.3.13-Rayo Vallecano-巴列卡诺.MOV",
+            "2021.7.3-Czech Republic-捷克.mov",
+            "2021.1.30-FC Augsburg-奥格斯堡.mp4",
+            "2016.9.18-AC Horsens-霍森斯.mp4",
+            "2016.11.8-Aalborg BK-阿尔堡.mov",
+            "2021.12.11-Athletic-毕尔巴鄂竞技.mov",
+            "2023.11.17-Slovenia-斯洛文尼亚.mov",
+            "2023.12.1-KVC Westerlo-韦斯特鲁.mov",
+            "2017.4.1-SC Freiburg-弗赖堡3球.mp4",
+            "2024.7.29-Aarhus GF-奥胡斯.mov",
+            "2018.4.29-Dortmund-多特蒙德.mov",
+            "2018.3.2-M'gladbach-门兴.mov",
+            "2024.12.7-Kolding IF-科灵.MOV",
+            "2015.8.2-Sönderjyske-桑德捷斯基.mp4",
+            "2015.8.23-Aarhus GF -奥胡斯.mp4",
+            "2016.4.24-Viborg FF-维堡.mp4",
+            "2016.7.27-Astra Giurgiu-阿斯特拉（罗马尼亚）.mp4",
+            "2016.7.16-Lyngby BK-灵比.mp4",
+            "2016.7.23-Esbjerg fB-埃斯比约.mp4",
+            "2016.5.29-Aarhus GF-奥胡斯.mp4",
+            "2016.5.1-FC Midtjylland-中日德兰.mp4",
+            "2016.4.6-Brøndby IF-布隆德比.mp4",
+            "2012.12.9-FC Nordsjælland-北西兰.mp4",
+            "2015.3.8-Brøndby IF-布隆德比.mp4",
+            "2013.9.22-Odense BK-欧本.mp4",
+            "2014.12.4-Greve Fodbold-格雷弗.mp4",
+            "2014.5.4-Brøndby IF-布隆德比.mp4",
+            "2015.5.11-Vestsjælland-西希兰.mp4",
+            "2017.2.18-FSV Mainz 05-美因茨.mov",
+            "2016.11.6-Sönderjyske-桑德捷斯基.mov",
+            "2024.12.3-Nordsjaelland-北西兰.mov",
+            "2017.9.1-Poland-波兰.mov",
+            "2025.2.18-Randers FC-兰达斯(Own Goal).mp4",
+            "2009.7.22-Mogren-莫格伦.mp4",
+            "2011.7.30-FC Nordsjælland-北西兰.mp4",
+            "2025.4.27-Aarhus GF-奥胡斯.mp4",
+            "2025.5.12-FC Midtjylland-中日德兰.mp4",
+        ];
+
+        function parseFilename(filename) {
+            const lastDashIndex = filename.lastIndexOf("-");
+            const dotIndex = filename.lastIndexOf(".");
+            if (lastDashIndex < 0 || dotIndex < 0) return null;
+
+            const datePart = filename.split("-")[0];
+            const chineseName = filename.substring(lastDashIndex + 1, dotIndex).trim();
+
+            const dateParts = datePart.split(".");
+            if (dateParts.length !== 3) return null;
+            const year = parseInt(dateParts[0], 10);
+            const month = parseInt(dateParts[1], 10);
+            const day = parseInt(dateParts[2], 10);
+
+            const dateObj = new Date(year, month - 1, day);
+
+            return {
+                filename,
+                dateRaw: datePart,
+                dateObj,
+                chineseName,
+                src: `${VIDEO_BASE}${filename}`,
+            };
+        }
+
+        const videosData = videoFiles
+            .map(parseFilename)
+            .filter((v) => v !== null)
+            .sort((a, b) => b.dateObj - a.dateObj);
+
+
+        const goalGrid = document.getElementById("goalGrid");
+        const videoModal = document.getElementById("videoModal");
+        const modalVideo = document.getElementById("modalVideo");
+        const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+        videosData.forEach((video) => {
+            const item = document.createElement("div");
+            item.className = "goal-item";
+
+            const videoEl = document.createElement("video");
+            videoEl.src = encodeURI(video.src);
+            videoEl.preload = "metadata";
+            videoEl.controls = false;
+            videoEl.muted = true;
+            videoEl.loop = true;
+            videoEl.style.cursor = "pointer";
+            videoEl.style.objectFit = "cover";
+
+            // 加载元数据后跳到中间帧
+            videoEl.addEventListener("loadedmetadata", () => {
+                if (videoEl.duration && !isNaN(videoEl.duration)) {
+                    videoEl.currentTime = videoEl.duration / 2;
+                }
+            });
+
+            // 跳转后暂停，显示该帧
+            videoEl.addEventListener("seeked", () => {
+                videoEl.pause();
+            });
+
+            // 鼠标悬停播放，离开暂停回中间帧
+            videoEl.addEventListener("mouseenter", () => {
+                videoEl.muted = true;
+                videoEl.play();
+            });
+            videoEl.addEventListener("mouseleave", () => {
+                videoEl.pause();
+                videoEl.currentTime = videoEl.duration / 2;
+            });
+
+            // 点击视频弹窗预览（解除静音）
+            videoEl.addEventListener("click", (e) => {
+                e.preventDefault();
+                modalVideo.src = encodeURI(video.src);
+                modalVideo.currentTime = 0;
+                modalVideo.muted = false;
+                modalVideo.play();
+                videoModal.style.display = "flex";
+            });
+
+            const dateLink = document.createElement("a");
+            dateLink.textContent = video.dateRaw;
+            dateLink.href = "detail.html?video=" + encodeURIComponent(video.filename);
+            dateLink.className = "goal-time";
+            dateLink.title = "查看详情";
+
+            const opponentLink = document.createElement("a");
+            opponentLink.textContent = video.chineseName;
+            opponentLink.href = "detail.html?video=" + encodeURIComponent(video.filename);
+            opponentLink.className = "goal-opponent";
+            opponentLink.title = "查看详情";
+
+            item.appendChild(videoEl);
+            item.appendChild(dateLink);
+            item.appendChild(document.createElement("br"));
+            item.appendChild(opponentLink);
+            goalGrid.appendChild(item);
+        });
+
+        // 页面加载完后，自动轮流播放每个视频中间帧预览
+        window.addEventListener("load", () => {
+            const videos = document.querySelectorAll(".goal-item video");
+            let index = 0;
+
+            function previewNext() {
+                if (videos.length === 0) return;
+
+                const currentVideo = videos[index];
+                // 播放中间帧
+                if (currentVideo.duration && !isNaN(currentVideo.duration)) {
+                    currentVideo.currentTime = currentVideo.duration / 2;
+                }
+                currentVideo.muted = true;
+                currentVideo.play();
+
+                // 预览时长1.5秒（可调整）
+                setTimeout(() => {
+                    currentVideo.pause();
+                    if (currentVideo.duration && !isNaN(currentVideo.duration)) {
+                        currentVideo.currentTime = currentVideo.duration / 2;
+                    }
+                    index = (index + 1) % videos.length;
+                    setTimeout(previewNext, 500); // 间隔0.5秒后播放下一个
+                }, 1500);
+            }
+
+            previewNext();
+        });
+
+        modalCloseBtn.addEventListener("click", () => {
+            modalVideo.pause();
+            modalVideo.src = "";
+            videoModal.style.display = "none";
+        });
+
+
+        videoModal.addEventListener("click", (e) => {
+            if (e.target === videoModal) {
+                modalVideo.pause();
+                modalVideo.src = "";
+                videoModal.style.display = "none";
+            }
+        });
+
+
+    </script>
+</body>
+
+</html>

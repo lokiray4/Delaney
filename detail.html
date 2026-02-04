@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>视频详情 - Thomas Delaney</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+                sans-serif;
+            background-color: #fff;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #003DA5;
+            color: white;
+            padding: 16px 40px;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            padding: 6px 14px;
+            background-color: #fff;
+            color: #003DA5;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            user-select: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #cce0ff;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        .video-player {
+            flex: 2;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: black;
+        }
+
+        .video-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .video-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #003DA5;
+            margin-bottom: 12px;
+        }
+
+        .video-meta {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="config.js"></script>
+    <header>
+        <div class="header-container">
+            <div class="logo">🇩🇰 Thomas Delaney - 视频详情</div>
+            <a href="goal.html" class="back-btn">返回进球纪录</a>
+        </div>
+    </header>
+    <main>
+        <div class="video-player">
+            <video id="videoPlayer" controls></video>
+        </div>
+        <div class="video-info">
+            <div class="video-title" id="videoTitle"></div>
+            <div class="video-meta" id="videoMeta"></div>
+        </div>
+    </main>
+
+    <script>
+        // 从URL获取参数
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // 解析文件名，得到日期和中文名
+        function parseFilename(filename) {
+            const lastDashIndex = filename.lastIndexOf("-");
+            const dotIndex = filename.lastIndexOf(".");
+            if (lastDashIndex < 0 || dotIndex < 0) return null;
+
+            const datePart = filename.split("-")[0];
+            const chineseName = filename.substring(lastDashIndex + 1, dotIndex).trim();
+
+            return { date: datePart, opponent: chineseName };
+        }
+
+        // 主逻辑
+        (function () {
+            const videoFile = getQueryParam("video");
+            if (!videoFile) {
+                alert("未指定视频文件！");
+                window.location.href = "goal.html";
+                return;
+            }
+
+            // 防止XSS或错误，简单编码一下
+            const safeVideoFile = decodeURIComponent(videoFile);
+
+            // 可配置的视频基路径，部署到云存储后将其改为公网URL
+            const VIDEO_BASE = window.VIDEO_BASE || 'goal_video/';
+            const videoPlayer = document.getElementById("videoPlayer");
+            const finalSrc = `${VIDEO_BASE}${encodeURIComponent(safeVideoFile)}`;
+            videoPlayer.src = finalSrc;
+
+            // 设置标题和信息
+            const info = parseFilename(safeVideoFile);
+            if (info) {
+                document.getElementById("videoTitle").textContent = `对阵：${info.opponent}`;
+                document.getElementById("videoMeta").textContent = `进球时间：${info.date}`;
+            } else {
+                document.getElementById("videoTitle").textContent = "视频详情";
+                document.getElementById("videoMeta").textContent = "";
+            }
+        })();
+    </script>
+</body>
+
+</html>

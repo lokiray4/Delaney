@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thomas Delaney 职业生涯统计</title>
+    <style>
+        /* 全局设置 */
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background-color: #003DA5;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        nav a {
+            margin-left: 24px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.7;
+        }
+
+        .content {
+            padding: 60px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
+            font-weight: 900;
+            font-size: 3.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #003DA5;
+            position: relative;
+            max-width: 100%;
+            margin-bottom: 50px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: 120%;
+            max-width: 600px;
+            height: 3px;
+            background: linear-gradient(90deg, #003DA5 0%, #0057D9 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background-color: #003DA5;
+            color: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #d0d8e8;
+            /* 偶数行背景色更深 */
+        }
+
+        tbody tr:hover {
+            background-color: #b0c4e0;
+            /* 悬停高亮 */
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">🇩🇰 Thomas Delaney</div>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="#">赛季回顾</a>
+            <a href="stat.html">统计数据</a>
+            <a href="goal.html">进球纪录</a>
+        </nav>
+    </header>
+
+    <section class="content">
+        <table>
+            <thead>
+                <tr>
+                    <th>赛季</th>
+                    <th>年龄</th>
+                    <th>球队</th>
+                    <th>国家</th>
+                    <th>排名</th>
+                    <th>出场场次</th>
+                    <th>首发场次</th>
+                    <th>上场分钟</th>
+                    <th>进球</th>
+                    <th>助攻</th>
+                    <th>进球+助攻</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2009-2010</td>
+                    <td>17</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>9</td>
+                    <td>1</td>
+                    <td>119</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2010-2011</td>
+                    <td>18</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>16</td>
+                    <td>4</td>
+                    <td>390</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2011-2012</td>
+                    <td>19</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>2</td>
+                    <td>19</td>
+                    <td>16</td>
+                    <td>1259</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2012-2013</td>
+                    <td>20</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>21</td>
+                    <td>13</td>
+                    <td>1367</td>
+                    <td>1</td>
+                    <td>3</td>
+                    <td>4</td>
+                </tr>
+                <tr>
+                    <td>2013-2014</td>
+                    <td>21</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>2</td>
+                    <td>32</td>
+                    <td>27</td>
+                    <td>2526</td>
+                    <td>3</td>
+                    <td>0</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>2014-2015</td>
+                    <td>22</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>2</td>
+                    <td>27</td>
+                    <td>24</td>
+                    <td>2175</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>2015-2016</td>
+                    <td>23</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>29</td>
+                    <td>29</td>
+                    <td>2575</td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>2016-2017</td>
+                    <td>24</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>19</td>
+                    <td>18</td>
+                    <td>1553</td>
+                    <td>6</td>
+                    <td>1</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>2016-2017</td>
+                    <td>24</td>
+                    <td>不来梅</td>
+                    <td>德国</td>
+                    <td>8</td>
+                    <td>13</td>
+                    <td>11</td>
+                    <td>916</td>
+                    <td>4</td>
+                    <td>1</td>
+                    <td>5</td>
+                </tr>
+                <tr>
+                    <td>2017-2018</td>
+                    <td>25</td>
+                    <td>不来梅</td>
+                    <td>德国</td>
+                    <td>11</td>
+                    <td>32</td>
+                    <td>31</td>
+                    <td>2796</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>7</td>
+                </tr>
+                <tr>
+                    <td>2018-2019</td>
+                    <td>26</td>
+                    <td>多特蒙德</td>
+                    <td>德国</td>
+                    <td>2</td>
+                    <td>30</td>
+                    <td>27</td>
+                    <td>2283</td>
+                    <td>3</td>
+                    <td>5</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>2019-2020</td>
+                    <td>27</td>
+                    <td>多特蒙德</td>
+                    <td>德国</td>
+                    <td>2</td>
+                    <td>11</td>
+                    <td>11</td>
+                    <td>830</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2020-2021</td>
+                    <td>28</td>
+                    <td>多特蒙德</td>
+                    <td>德国</td>
+                    <td>3</td>
+                    <td>20</td>
+                    <td>14</td>
+                    <td>1286</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>2021-2022</td>
+                    <td>29</td>
+                    <td>多特蒙德</td>
+                    <td>德国</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>18</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2021-2022</td>
+                    <td>29</td>
+                    <td>塞维利亚</td>
+                    <td>西班牙</td>
+                    <td>4</td>
+                    <td>26</td>
+                    <td>15</td>
+                    <td>1549</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td>2022-2023</td>
+                    <td>30</td>
+                    <td>塞维利亚</td>
+                    <td>西班牙</td>
+                    <td>12</td>
+                    <td>8</td>
+                    <td>2</td>
+                    <td>309</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2022-2023</td>
+                    <td>30</td>
+                    <td>霍芬海姆</td>
+                    <td>德国</td>
+                    <td>12</td>
+                    <td>6</td>
+                    <td>4</td>
+                    <td>298</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>0</td>
+                </tr>
+                <tr>
+                    <td>2023-2024</td>
+                    <td>31</td>
+                    <td>安德莱赫特</td>
+                    <td>比利时</td>
+                    <td>3</td>
+                    <td>14</td>
+                    <td>11</td>
+                    <td>912</td>
+                    <td>1</td>
+                    <td>0</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>2024-2025</td>
+                    <td>32</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>24</td>
+                    <td>20</td>
+                    <td>1649</td>
+                    <td>5</td>
+                    <td>3</td>
+                    <td>8</td>
+                </tr>
+                <tr>
+                    <td>2025-2026</td>
+                    <td>33</td>
+                    <td>哥本哈根</td>
+                    <td>丹麦</td>
+                    <td>1</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>246</td>
+                    <td>0</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>
