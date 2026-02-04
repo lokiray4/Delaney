@@ -6,7 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thomas Delaney 球员记录</title>
     <style>
-        /* 全局设置 */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* ==============================
+        全局样式
+        ============================== */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -15,30 +28,44 @@
             line-height: 1.6;
         }
 
-        /* 导航栏 */
+        /* ==============================
+        Header 样式
+        ============================== */
         header {
+            width: 100vw;
+            box-sizing: border-box;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 40px;
+            padding: 12px 20px;
             background-color: #003DA5;
-            /* 哥本哈根蓝 */
             color: white;
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
-        .logo {
+        header .logo {
             font-size: 1.2rem;
             font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         nav a {
-            margin-left: 24px;
+            margin: 6px 10px;
             text-decoration: none;
             color: white;
             font-weight: 500;
+            font-size: 0.9rem;
             transition: opacity 0.3s;
         }
 
@@ -46,76 +73,14 @@
             opacity: 0.7;
         }
 
-
-        /* 内容区示例 */
-        .content {
-            background-color: #F5F7FA;
-            padding: 60px 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
-            font-weight: 9000;
-            font-size: 50rem;
-            text-transform: uppercase;
-            color: #003DA5;
-            position: relative;
-            max-width: 300%;
-            text-align: center;
-            /* 居中 */
-            margin-left: auto;
-            /* 块居中 */
-            margin-right: auto;
-        }
-
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 30px;
-        }
-
-        .stat-card {
-            background-color: white;
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #003DA5;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-
+        /* ==============================
+        Main 区域样式
+        ============================== */
         .main {
-            position: relative;
+            width: 100vw;
             height: 75vh;
+            position: relative;
             overflow: hidden;
-            transform: scale(1);
-            opacity: 0;
-            /* 初始透明 */
-            transition: opacity 0.8s ease;
-            /* 图片渐入时间较短 */
-        }
-
-        .main.loaded {
-            opacity: 1;
-            /* 图片渐入 */
-        }
-
-        .main.shrink {
-            transform: scale(0.95);
-            opacity: 0.7;
         }
 
         .main-image {
@@ -125,56 +90,88 @@
             display: block;
         }
 
-        /* 文字初始状态 */
         .main-overlay {
             position: absolute;
-            top: 40%;
+            top: 50%;
             left: 50%;
-            transform: translate(-50%, -90%);
+            transform: translate(-50%, -50%);
             text-align: center;
             color: white;
-            text-shadow: 0 10px 10px rgba(0, 0, 0, 0.6);
-            z-index: 2;
-            opacity: 0;
-            /* 初始透明 */
-            transition: transform 2s ease, opacity 2s ease;
-            /* 渐入时间更长 */
-            transition-delay: 0.5s;
-            /* 比图片晚0.4秒开始 */
-        }
-
-        /* 文字加载后状态 */
-        .main.loaded .main-overlay {
-            opacity: 1;
-            transform: translate(-50%, -50%);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+            width: 90%;
         }
 
         .main-overlay h1 {
-            font-size: 8rem;
-            max-width: 6000px;
-            margin-bottom: 1px;
-
-            white-space: nowrap;
-            /* 禁止换行 */
-            overflow: visible;
-            /* 不隐藏溢出内容 */
-            text-overflow: clip;
-            /* 超出文本直接裁剪（无省略号） */
+            font-size: 5vw;
+            line-height: 1.2;
+            word-wrap: break-word;
         }
 
+        /* 图片加载动画 */
+        .main.loaded {
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
 
-        .main-overlay p {
-            font-size: 2rem;
-            max-width: 600px;
+        .main.shrink {
+            transform: scale(0.95);
+            opacity: 0.7;
+        }
+
+        /* ==============================
+        Content 样式示例
+        ============================== */
+        .content {
+            background-color: #F5F7FA;
+            padding: 60px 40px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        .main.shrink .main-overlay h1,
-        .main.shrink .main-overlay p {
-            transform: translateY(-20px);
-            opacity: 0.8;
+        .section-title {
+            font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 10vw, 6rem);
+            /* 最小 2rem，最大 6rem，随屏幕宽度 10vw 缩放 */
+            text-transform: uppercase;
+            color: #003DA5;
+            text-align: center;
+            margin: 0 auto 50px auto;
+            max-width: 100%;
+            white-space: nowrap;
+            /* 不换行 */
+            overflow: hidden;
+            /* 超出部分隐藏 */
+            text-overflow: clip;
+            /* 不显示省略号 */
+            position: relative;
         }
 
+        /* 文字底部装饰线 */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            width: 120%;
+            max-width: 600px;
+            height: 3px;
+            background: linear-gradient(90deg, #003DA5 0%, #0057D9 100%);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        p {
+            text-align: justify;
+            text-indent: 2em;
+            line-height: 1.6;
+            margin: 0 0 1em 0;
+            max-width: 800px;
+        }
+
+        /* ==============================
+        Timeline 样式
+        ============================== */
         .timeline {
             max-width: 900px;
             margin: 60px auto 80px;
@@ -185,7 +182,6 @@
         .timeline-container {
             position: relative;
             padding: 20px 0;
-            /* 时间轴主线 */
         }
 
         .timeline-container::before {
@@ -206,6 +202,7 @@
             position: relative;
             width: 50%;
             box-sizing: border-box;
+            margin: 48px 0;
         }
 
         .timeline-item.left {
@@ -222,11 +219,26 @@
             background-color: white;
             padding: 15px 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 61, 165, 0.15),
+                0 6px 18px rgba(0, 61, 165, 0.12);
             position: relative;
             z-index: 2;
             display: inline-block;
             max-width: 380px;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .timeline-item.visible .content {
+            animation: floatUpFadeIn 0.7s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .timeline-item .content:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 40px 80px rgba(0, 61, 165, 0.2),
+                0 12px 36px rgba(0, 61, 165, 0.16);
+            cursor: default;
         }
 
         .timeline-item.left .content::after {
@@ -267,8 +279,46 @@
             line-height: 1.5;
         }
 
-        /* 响应式，窄屏幕时改为单列 */
+        /* ==============================
+        动画
+        ============================== */
+        @keyframes floatUpFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ==============================
+        响应式
+        ============================== */
         @media screen and (max-width: 720px) {
+            header {
+                padding: 10px 15px;
+            }
+
+            header .logo {
+                font-size: 0.9rem;
+                margin-bottom: 6px;
+            }
+
+            nav a {
+                font-size: 0.8rem;
+                margin: 4px 6px;
+            }
+
+            .main {
+                height: 50vh;
+            }
+
+            .main-overlay h1 {
+                font-size: 8vw;
+            }
 
             .timeline-item,
             .timeline-item.left,
@@ -286,120 +336,10 @@
             .timeline-item .content::after {
                 display: none;
             }
-        }
 
-        @keyframes floatUpFadeIn {
-            0% {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .timeline-item .content {
-            background-color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow:
-                0 20px 40px rgba(0, 61, 165, 0.15),
-                0 6px 18px rgba(0, 61, 165, 0.12);
-            position: relative;
-            z-index: 2;
-            display: inline-block;
-            max-width: 380px;
-
-            /* 初始状态 */
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        /* 滚动触发显示动画 */
-        .timeline-item.visible .content {
-            animation: floatUpFadeIn 0.7s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        /* 鼠标悬浮放大 + 浮动阴影 */
-        .timeline-item .content:hover {
-            transform: translateY(-8px) scale(1.03);
-            box-shadow:
-                0 40px 80px rgba(0, 61, 165, 0.2),
-                0 12px 36px rgba(0, 61, 165, 0.16);
-            cursor: default;
-            transition: box-shadow 0.4s ease, transform 0.4s ease;
-        }
-
-        .section-title {
-            font-family: 'Oswald', 'Arial Black', Arial, sans-serif;
-            /* 选个粗且有设计感的字体 */
-            font-weight: 900;
-            font-size: 3.8rem;
-            /* 字体更大 */
-            letter-spacing: 0.25em;
-            /* 拉宽字间 */
-            text-transform: uppercase;
-            color: #003DA5;
-            position: relative;
-            max-width: 100%;
-            margin-bottom: 50px;
-        }
-
-        /* 文字底部加长装饰线 */
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -12px;
-            left: 50%;
-            width: 120%;
-            max-width: 600px;
-            height: 3px;
-            background: linear-gradient(90deg, #003DA5 0%, #0057D9 100%);
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        p {
-            text-align: justify;
-            /* 两端对齐 */
-            text-indent: 2em;
-            /* 首行缩进两个字符宽度 */
-            line-height: 1.6;
-            /* 适当行高，增加可读性 */
-            margin: 0 0 1em 0;
-            /* 下边距 */
-            max-width: 800px;
-            /* 控制宽度，避免太宽阅读困难，可根据需要调整 */
-        }
-
-        /* 基础上下间距，默认 48px，可被每项的 --mt 覆盖 */
-        .timeline-item {
-            margin: 48px 0;
-        }
-
-        /* 允许通过每项内联变量自定义“上外边距”，支持负值实现重叠 */
-        .timeline-item {
-            margin-top: var(--mt, 48px);
-        }
-
-        /* 为了更自然的层级关系，靠右的一侧略提高层级，避免重叠时被遮 */
-        .timeline-item.right .content {
-            z-index: 3;
-        }
-
-        .timeline-item.left .content {
-            z-index: 2;
-        }
-
-        /* 移动端：统一恢复正常间距，避免小屏重叠导致阅读困难 */
-        @media screen and (max-width: 720px) {
             .timeline-item {
                 margin: 24px 0 !important;
                 --mt: 24px;
-                /* 即使写了负值，这里也会被覆盖为安全值 */
             }
         }
     </style>
