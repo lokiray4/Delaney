@@ -12,11 +12,17 @@
             background-color: #f4f4f4;
         }
 
+        /* ==============================
+        Header 样式
+        ============================== */
         header {
+            width: 100vw;
+            box-sizing: border-box;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 40px;
+            padding: 12px 20px;
             background-color: #003DA5;
             color: white;
             position: sticky;
@@ -24,16 +30,26 @@
             z-index: 1000;
         }
 
-        .logo {
+        header .logo {
             font-size: 1.2rem;
             font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
         nav a {
-            margin-left: 24px;
+            margin: 6px 10px;
             text-decoration: none;
             color: white;
             font-weight: 500;
+            font-size: 0.9rem;
             transition: opacity 0.3s;
         }
 
@@ -41,38 +57,46 @@
             opacity: 0.7;
         }
 
+        /* ==============================
+        公共 section 样式
+        ============================== */
         .section {
             padding: 20px;
             text-align: center;
         }
 
+        /* 自适应标题条，左右留空 */
         .section-title {
+            display: inline-block;
+            font-weight: bold;
             text-align: center;
             color: white;
-            font-size: 1.8rem;
-            font-weight: bold;
-            padding: 10px 20px;
+            padding: 10px 5%;
             border-radius: 8px;
-            display: inline-block;
+            font-size: clamp(1.5rem, 6vw, 2rem);
+            max-width: 90%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
             margin-bottom: 10px;
         }
 
         .club-title {
-            width: 97%;
             background: linear-gradient(135deg, #003DA5, #0051D4);
             margin: 0 auto 20px auto;
         }
 
         .national-title {
-            width: 97%;
             background-color: #C8102E;
             margin: 0 auto 20px auto;
         }
 
+        /* Kits Grid */
         .kits {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
             gap: 12px;
+            padding: 0 5%;
         }
 
         .kit {
@@ -139,78 +163,21 @@
             }
         }
 
-        #kitModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
+        /* 响应式导航栏 */
+        @media screen and (max-width: 720px) {
+            header {
+                padding: 10px 15px;
+            }
 
-        #kitModalContent {
-            position: relative;
-            width: 80%;
-            max-width: 800px;
-            aspect-ratio: 4 / 3;
-            /* 背景固定为4:3 */
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+            header .logo {
+                font-size: 0.9rem;
+                margin-bottom: 6px;
+            }
 
-        #kitModalBg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            filter: blur(2px);
-            transform: scale(0.95);
-            opacity: 0;
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease;
-            z-index: 0;
-        }
-
-        #kitModalImg {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            z-index: 1;
-            transform: scale(0.8);
-            opacity: 0;
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.35s ease;
-        }
-
-
-
-
-        #kitModalClose {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 28px;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            user-select: none;
-            padding: 4px 10px;
-            background-color: rgba(0, 61, 165, 0.9);
-            border-radius: 6px;
-            transition: background-color 0.3s ease;
-        }
-
-        #kitModalClose:hover {
-            background-color: rgba(0, 30, 90, 0.9);
+            nav a {
+                font-size: 0.8rem;
+                margin: 4px 6px;
+            }
         }
     </style>
 </head>
